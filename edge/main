@@ -1,0 +1,26 @@
+#!/usr/bin/python3
+
+import json
+import datetime
+import logging
+from sender import Sender
+from reader import Reader
+
+PORT = '/dev/ttyUSB0'
+BAUD = 9600
+DATETIME = datetime.datetime.now()
+
+reader = Reader(port=PORT, baud=BAUD)
+sender = Sender(port=PORT, baud=BAUD, datetime=DATETIME)
+i = 0
+
+while(i < 10):
+    logging.info('Contagem para verificar presença: %s', i)
+    presence = json.loads(reader.getData())['presence']
+
+    if(presence == True):
+        logging.info('Abrindo porta de alimentação do pet')
+        sender.alimentar()
+        print('PET ALIMENTADO.\n')
+
+    i += 1
